@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json.schemastore.org/launchsettings.json",
+    "profiles": {
+      "OpenApiFromMCP": {
+        "commandName": "Project",
+        "commandLineArgs": "https://public-mcp-server-api.azurewebsites.net/sse",
+        "workingDirectory": "$(ProjectDir)"
+      }
+    }
+  }
