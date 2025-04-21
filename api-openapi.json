@@ -1,0 +1,292 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "api",
+    "description": "OpenAPI for MCP Server",
+    "version": "1.0.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Get the list of tools",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "Execute a tool",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/SendMailRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CreateTaskRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EchoRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SendMailParameters": {
+        "title": "SendMail",
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "message": {
+            "required": [
+              "subject",
+              "body",
+              "toRecipients",
+              "ccRecipients",
+              "bccRecipients"
+            ],
+            "type": "object",
+            "properties": {
+              "subject": {
+                "type": "string"
+              },
+              "body": {
+                "required": [
+                  "contentType",
+                  "content"
+                ],
+                "type": "object",
+                "properties": {
+                  "contentType": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "toRecipients": {
+                "type": "array",
+                "items": {
+                  "required": [
+                    "address",
+                    "displayName"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "ccRecipients": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/items"
+                }
+              },
+              "bccRecipients": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/items"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "description": "Send an email"
+      },
+      "SendMailRequest": {
+        "required": [
+          "method",
+          "jsonrpc"
+        ],
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "enum": [
+              "2.0"
+            ],
+            "type": "string"
+          },
+          "id": { },
+          "method": {
+            "enum": [
+              "tool/call"
+            ],
+            "type": "string"
+          },
+          "params": {
+            "required": [
+              "name"
+            ],
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "SendMail"
+                ],
+                "type": "string"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/SendMailParameters"
+              }
+            }
+          }
+        }
+      },
+      "CreateTaskParameters": {
+        "title": "CreateTask",
+        "required": [
+          "task"
+        ],
+        "type": "object",
+        "properties": {
+          "task": {
+            "required": [
+              "name",
+              "description",
+              "createdAt",
+              "dueAt",
+              "isCompleted"
+            ],
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "dueAt": {
+                "type": "string"
+              },
+              "isCompleted": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "description": "Creates a task"
+      },
+      "CreateTaskRequest": {
+        "required": [
+          "method",
+          "jsonrpc"
+        ],
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "enum": [
+              "2.0"
+            ],
+            "type": "string"
+          },
+          "id": { },
+          "method": {
+            "enum": [
+              "tool/call"
+            ],
+            "type": "string"
+          },
+          "params": {
+            "required": [
+              "name"
+            ],
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "CreateTask"
+                ],
+                "type": "string"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/CreateTaskParameters"
+              }
+            }
+          }
+        }
+      },
+      "EchoParameters": {
+        "title": "Echo",
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "description": "Echoes the input back to the client."
+      },
+      "EchoRequest": {
+        "required": [
+          "method",
+          "jsonrpc"
+        ],
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "enum": [
+              "2.0"
+            ],
+            "type": "string"
+          },
+          "id": { },
+          "method": {
+            "enum": [
+              "tool/call"
+            ],
+            "type": "string"
+          },
+          "params": {
+            "required": [
+              "name"
+            ],
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Echo"
+                ],
+                "type": "string"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/EchoParameters"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

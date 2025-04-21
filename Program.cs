@@ -93,10 +93,21 @@ static OpenApiSchema CreateToolCallSchema(string name, IOpenApiSchema? toolSchem
         Type = JsonSchemaType.Object,
         Properties = new Dictionary<string, IOpenApiSchema>
             {
-                { "toolId", new OpenApiSchema { Type = JsonSchemaType.String, Enum = [name] } },
-                { "params", toolSchema }
+                { "jsonrpc", new OpenApiSchema { Type = JsonSchemaType.String, Enum = ["2.0"] } },
+                { "id", new OpenApiSchema { Type = JsonSchemaType.String | JsonSchemaType.Integer | JsonSchemaType.Null } },
+                { "method", new OpenApiSchema { Type = JsonSchemaType.String, Enum = ["tool/call"] } },
+                { "params", new OpenApiSchema {
+                    Type = JsonSchemaType.Object,
+                    Properties = new Dictionary<string, IOpenApiSchema>()
+                        {
+                            {"name",new OpenApiSchema { Type = JsonSchemaType.String, Enum = [name] }},
+                            {"arguments", toolSchema}
+                        },
+                    Required = ["name"]
+                    }
+                }
             },
-        Required = ["toolId"]
+        Required = ["method","jsonrpc"]
     };
     return toolCallSchema;
 }
