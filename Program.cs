@@ -10,6 +10,7 @@ using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol.Transport;
 
 var mcpServerUrl = args[0];
+
 if (string.IsNullOrEmpty(mcpServerUrl))
 {
     Console.WriteLine("Please provide the MCP server URL as a command line argument.");
@@ -23,7 +24,7 @@ var tools = await client.ListToolsAsync();
 var doc = CreateOpenApiDocument(client,tools);
 
 // Serialize the OpenAPI document to JSON
-using (var fileStream = new FileStream($"{client.ServerInfo.Name}-openapi.json", FileMode.Create, FileAccess.Write, FileShare.None))
+using (var fileStream = new FileStream($"{client.ServerInfo.Name}-mcp-description.json", FileMode.Create, FileAccess.Write, FileShare.None))
 {
     var streamWriter = new StreamWriter(fileStream);
     var writer = new OpenApiJsonWriter(streamWriter);
@@ -119,10 +120,16 @@ static OpenApiPathItem CreateMessagesPathItem(OpenApiSchema schema)
         Operations = new Dictionary<HttpMethod, OpenApiOperation>()
             {
                 { HttpMethod.Get, new OpenApiOperation() {
-                    Description = "Get the list of tools",
+                    Description = "Initiate SSE Stream",
                     Responses = new OpenApiResponses()
                     {
-                        { "200", new OpenApiResponse() { Description = "OK" } }
+                        { "200", new OpenApiResponse() { 
+                            Description = "OK",
+                            Content = new Dictionary<string, OpenApiMediaType>()
+                            {
+                                { "text/event-stream", new OpenApiMediaType() { } }
+                            }
+                         } }
                     }
                 }},
                 { HttpMethod.Post, new OpenApiOperation() {

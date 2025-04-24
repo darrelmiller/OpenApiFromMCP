@@ -8,10 +8,13 @@
   "paths": {
     "/": {
       "get": {
-        "description": "Get the list of tools",
+        "description": "Initiate SSE Stream",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/event-stream": { }
+            }
           }
         }
       },
